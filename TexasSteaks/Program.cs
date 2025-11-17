@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TexasSteaks.Context;
+using TexasSteaks.Repositories;
+using TexasSteaks.Repositories.Interfaces;
 
 namespace TexasSteaks
 {
@@ -14,6 +16,9 @@ namespace TexasSteaks
             // Add services to the container.
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddTransient<ISteakRepository, SteakRepository>();
 
             builder.Services.AddControllersWithViews();
 
