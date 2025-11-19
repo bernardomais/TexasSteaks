@@ -1,0 +1,68 @@
+﻿@model IEnumerable<TexasSteaks.Models.Steak>
+
+@{
+    ViewData["Title"] = "List";
+    ViewData["PageHeader"] = "List of steaks";
+    ViewData["PageDescription"] = "Full list of our products that will expand your creativity (and open your palate).";
+}
+
+<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+    @foreach (var steak in Model)
+    {
+        <div class="col mb-5">
+            <div class="card h-100">
+                <!-- Sale badge-->
+                @if (steak.InStock)
+                {
+                    if (steak.Discount > 0)
+                    {
+                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">@steak.Discount % OFF</div>
+                    }
+                }
+                else
+                {
+                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">SOLD</div>
+                }
+
+                <!-- Product image-->
+                <img class="card-img-top" src="~/images/@steak.ImageURL" alt="..." />
+                <!-- Product details-->
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <!-- Product name-->
+                        <h5 class="fw-bolder">@steak.Name</h5>
+                        <!-- Product reviews-->
+                        <div class="d-flex justify-content-center small text-warning mb-2">
+                            @for (int i = 1; i <= steak.Star; i++)
+                            {
+                                <div class="bi-star-fill"></div>
+                            }
+                        </div>
+                        <!-- Product price-->
+                        @if (steak.InStock)
+                        {
+                            if (steak.FinalPrice > 0)
+                            {
+                                <span class="text-muted text-decoration-line-through">@steak.Price.ToString("c")</span>
+                                <span>@steak.FinalPrice.ToString("c")</span>
+                            }
+                            else
+                            {
+                                <span>@steak.Price.ToString("c")</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted text-decoration-line-through">@steak.Price.ToString("c")</span>
+                        }
+                    </div>
+                </div>
+                <!-- Product actions-->
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
