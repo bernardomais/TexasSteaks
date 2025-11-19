@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
+using TexasSteaks.Migrations;
 
 namespace TexasSteaks.Models
 {
@@ -55,5 +57,11 @@ namespace TexasSteaks.Models
 
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
+
+        [NotMapped]
+        public decimal FinalPrice
+        {
+            get { return (Discount == 0) ? 0 : (Price - (Price * Discount / 100)); }
+        }
     }
 }
