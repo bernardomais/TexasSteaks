@@ -1,5 +1,5 @@
 # TexasSteaks
-A simple CMS for an e-commerce website.
+Platform for Your Online Store, developed using .NET 8, ASP.NET MVC, Entity Framework and SQL Server. It provides product management, category administration and content control to support online sales, with a clean architecture and structured data persistence layer.
 
 ## The project uses:
 
