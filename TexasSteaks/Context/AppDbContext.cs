@@ -11,5 +11,6 @@ namespace TexasSteaks.Context
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Steak> Steaks { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
     }
 }
