@@ -6,6 +6,6 @@ namespace TexasSteaks.Repositories.Interfaces
     {
         IEnumerable<Steak> Steaks { get; }
         IEnumerable<Steak> FavoritesSteaks { get; }
-        Steak GetSteakById (int id);
+        Steak GetSteakById(int id);
     }
 }
