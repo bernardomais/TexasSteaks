@@ -9,17 +9,19 @@ namespace TexasSteaks.Repositories
     public class ShoppingCartRepository : IShoppingCartRepository
     {
         private readonly AppDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ShoppingCartRepository(AppDbContext context)
+        public ShoppingCartRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public ShoppingCart GetCart(IServiceProvider services)
+        public ShoppingCart GetCart()
         {
             //Defines a session
             ISession session =
-                services.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+                _httpContextAccessor.HttpContext?.Session;
 
             //Gets or generates the cart ID.
             string cartId = session.GetString("cartId") ?? Guid.NewGuid().ToString();
@@ -31,19 +33,21 @@ namespace TexasSteaks.Repositories
             return new ShoppingCart
             {
                 Id = cartId,
-                ShoppingCartItems = _context.ShoppingCartItems.Where(s => s.ShoppingCartId == cartId).ToList(),
+                ShoppingCartItems = _context.ShoppingCartItems
+                    .Where(s => s.ShoppingCartId == cartId)
+                    .Include(s => s.Steak)
+                    .ToList()
             };
         }
 
-        public void AddToCart(int steakId, string shoppingCartId)
+        public void AddToCart(Steak steak, string shoppingCartId)
         {
-            ShoppingCartItem shoppingCartItem = _context.ShoppingCartItems.SingleOrDefault(
-                     s => s.Steak.Id == steakId &&
+            var shoppingCartItem = _context.ShoppingCartItems.SingleOrDefault(
+                     s => s.Steak.Id == steak.Id &&
                      s.ShoppingCartId == shoppingCartId);
 
             if (shoppingCartItem == null)
             {
-                Steak steak = _context.Steaks.SingleOrDefault(s => s.Id == steakId);
                 shoppingCartItem = new ShoppingCartItem
                 {
                     ShoppingCartId = shoppingCartId,
@@ -59,11 +63,11 @@ namespace TexasSteaks.Repositories
             _context.SaveChanges();
         }
 
-        public void RemoveFromCart(int steakId, string shoppingCartId)
+        public void RemoveFromCart(Steak steak, string shoppingCartId)
         {
             ShoppingCartItem shoppingCartItem = _context.ShoppingCartItems.SingleOrDefault(
-                     s => s.Steak.Id == steakId &&
-                     s.ShoppingCartId == shoppingCartId);
+                   s => s.Steak.Id == steak.Id &&
+                   s.ShoppingCartId == shoppingCartId);
 
             if (shoppingCartItem != null)
             {
